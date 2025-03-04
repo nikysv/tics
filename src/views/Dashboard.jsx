@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Inicio = () => {
+const Dashboard = () => {
   // Simulación de bitácora de acciones del usuario
   const [bitacora, setBitacora] = useState([
     { fecha: "2024-03-03 14:30", accion: "Subió un documento (Acta_001.pdf)" },
@@ -50,4 +50,4 @@ const Inicio = () => {
   );
 };
 
-export default Inicio;
+export default Dashboard;

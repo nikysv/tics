@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import Dashboard from "./views/Dashboard";
 import Indexar from "./views/Indexar";
 import MisLotes from "./components/lotes/MisLotes";
+import PerfilUsuario from "./components/user/UserView";
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/indexar/*" element={<Indexar />} />
           <Route path="/mis-lotes" element={<MisLotes />} />
-          <Route path="/perfil" element={<p>Vista de Perfil</p>} />
+          <Route path="/perfil" element={<PerfilUsuario />} />
           <Route path="/logout" element={<p>Saliendo...</p>} />
         </Routes>
       </main>

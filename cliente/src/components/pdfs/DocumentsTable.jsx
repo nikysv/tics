@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const DocumentsTable = ({ documents }) => {
+  const navigate = useNavigate(); // Hook de navegación sin refresco
+
   if (documents.length === 0) return null;
 
   return (
@@ -20,9 +23,7 @@ const DocumentsTable = ({ documents }) => {
               <td className="border border-gray-300 p-2">
                 <button
                   className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600"
-                  onClick={() => {
-                    window.location.href = `/indexar/documento/${encodeURIComponent(doc.title)}`;
-                  }}
+                  onClick={() => navigate(`/indexar/documento/${encodeURIComponent(doc.title)}`)}
                 >
                   Ver Documento
                 </button>

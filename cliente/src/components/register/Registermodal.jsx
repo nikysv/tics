@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../AuthContext";
 
 const RegisterModal = ({ isOpen, onClose }) => {
+  const { login } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -8,7 +10,7 @@ const RegisterModal = ({ isOpen, onClose }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !email || !password || !confirmPassword) {
       setError("Todos los campos son obligatorios.");
@@ -18,9 +20,27 @@ const RegisterModal = ({ isOpen, onClose }) => {
       setError("Las contraseñas no coinciden.");
       return;
     }
-    setError("");
-    console.log("Registro exitoso con:", { name, email, password });
-    onClose();
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Error al registrar el usuario.");
+        return;
+      }
+
+      // Iniciar sesión automáticamente con los datos del nuevo usuario
+      await login(email, password);
+      onClose(); // Cerrar el modal después del registro exitoso
+    } catch (error) {
+      setError("Error de conexión con el servidor.");
+    }
   };
 
   return (
@@ -60,13 +80,6 @@ const RegisterModal = ({ isOpen, onClose }) => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
-                <button
-                  type="button"
-                  className="absolute right-3 top-3 text-gray-500"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? "👁️" : "🙈"}
-                </button>
               </div>
             </div>
             <div className="mb-4">
@@ -79,13 +92,6 @@ const RegisterModal = ({ isOpen, onClose }) => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                 />
-                <button
-                  type="button"
-                  className="absolute right-3 top-3 text-gray-500"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? "👁️" : "🙈"}
-                </button>
               </div>
             </div>
             <button

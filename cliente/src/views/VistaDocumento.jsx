@@ -3,8 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import PDFViewer from "../components/pdfs/PDFViewer";
 import PDFNavigation from "../components/pdfs/PDFNavigation";
 
-const uploadedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
-
 const VistaDocumento = () => {
   const { titulo } = useParams();
   const navigate = useNavigate();
@@ -12,9 +10,11 @@ const VistaDocumento = () => {
   const [paginaActual, setPaginaActual] = useState(0);
 
   useEffect(() => {
-    const foundDoc = uploadedFiles.find(
+    const storedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
+    const foundDoc = storedFiles.find(
       (doc) => doc.title === decodeURIComponent(titulo)
     );
+
     if (foundDoc) {
       setDocumento(foundDoc);
     } else {

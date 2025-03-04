@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthContext";
 import RegisterModal from "../register/registermodal";
 
 const Login = () => {
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showRegisterModal, setShowRegisterModal] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -15,16 +19,12 @@ const Login = () => {
       return;
     }
 
-    console.log("Intento de login con:", { email, password });
-    setError(""); // Limpiar error si todo está bien
-  };
-
-  const openRegisterModal = () => {
-    setShowRegisterModal(true);
-  };
-
-  const closeRegisterModal = () => {
-    setShowRegisterModal(false);
+    try {
+      await login(email, password);
+      navigate("/"); // Redirigir al Dashboard después de iniciar sesión
+    } catch (err) {
+      setError("Credenciales incorrectas. Inténtalo de nuevo.");
+    }
   };
 
   return (
@@ -68,7 +68,7 @@ const Login = () => {
           <p className="text-sm text-gray-600">¿No tienes una cuenta?</p>
           <button
             className="text-blue-500 hover:underline"
-            onClick={openRegisterModal}
+            onClick={() => setShowRegisterModal(true)}
           >
             Regístrate
           </button>
@@ -78,7 +78,7 @@ const Login = () => {
       {showRegisterModal && (
         <RegisterModal
           isOpen={showRegisterModal}
-          onClose={closeRegisterModal}
+          onClose={() => setShowRegisterModal(false)}
         />
       )}
     </div>

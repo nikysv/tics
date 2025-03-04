@@ -14,7 +14,7 @@ const VistaDocumento = ({ documento, onClose }) => {
       {/* Vista del documento */}
       <div className="flex justify-center">
         <img
-          src={URL.createObjectURL(documento.files[paginaActual])}
+          src={documento.files[paginaActual]} // Usamos la URL base64 directamente
           alt={`Página ${paginaActual + 1}`}
           className="max-w-full h-96 border"
         />
@@ -30,7 +30,9 @@ const VistaDocumento = ({ documento, onClose }) => {
           >
             Anterior
           </button>
-          <span>Página {paginaActual + 1} de {documento.files.length}</span>
+          <span>
+            Página {paginaActual + 1} de {documento.files.length}
+          </span>
           <button
             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
             disabled={paginaActual === documento.files.length - 1}

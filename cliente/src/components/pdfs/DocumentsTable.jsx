@@ -2,9 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const DocumentsTable = ({ documents }) => {
-  const navigate = useNavigate(); // Hook de navegación sin refresco
+  const navigate = useNavigate();
 
-  if (documents.length === 0) return null;
+  if (documents.length === 0) return <p>No hay documentos registrados.</p>;
 
   return (
     <div className="mt-6">
@@ -17,13 +17,13 @@ const DocumentsTable = ({ documents }) => {
           </tr>
         </thead>
         <tbody>
-          {documents.map((doc, index) => (
-            <tr key={index} className="text-center">
-              <td className="border border-gray-300 p-2">{doc.title}</td>
+          {documents.map((doc) => (
+            <tr key={doc.id}>
+              <td className="border border-gray-300 p-2">{doc.titulo}</td>
               <td className="border border-gray-300 p-2">
                 <button
                   className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600"
-                  onClick={() => navigate(`/indexar/documento/${encodeURIComponent(doc.title)}`)}
+                  onClick={() => navigate(`/indexar/documento/${encodeURIComponent(doc.titulo)}`)}
                 >
                   Ver Documento
                 </button>

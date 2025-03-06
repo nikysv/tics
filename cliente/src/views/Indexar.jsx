@@ -5,46 +5,71 @@ import PDFPreview from "../components/pdfs/PDFPreview";
 import DocumentsTable from "../components/pdfs/DocumentsTable";
 
 const Indexar = () => {
-  const { pdfPages, isLoading, extraerPaginasPDF } = usePDFProcessor();
+  const { isLoading } = usePDFProcessor();
   const [title, setTitle] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [pdfPreviewUrl, setPdfPreviewUrl] = useState(""); // 🛠️ Almacena la URL del PDF
 
   useEffect(() => {
-    const storedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
-    setUploadedFiles(storedFiles);
+    fetchDocuments();
   }, []);
 
-  const handleSave = () => {
-    if (!title.trim()) {
-      alert("Debe ingresar un título.");
-      return;
-    }
-    if (pdfPages.length === 0) {
-      alert("Espere a que el PDF se procese antes de guardar.");
-      return;
-    }
-
-    const newEntry = { title, files: pdfPages };
-    const updatedFiles = [...uploadedFiles, newEntry];
-
-    setUploadedFiles(updatedFiles);
-    localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
-    setTitle("");
+  const fetchDocuments = async () => {
+    const token = localStorage.getItem("token");
+    const res = await fetch("http://localhost:5000/documentos", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    setUploadedFiles(data);
   };
+
+  const handleFileSelect = (file) => {
+    setSelectedFile(file);
+    
+    // 🛠️ Generar una URL temporal para mostrar la vista previa
+    const previewUrl = URL.createObjectURL(file);
+    setPdfPreviewUrl(previewUrl);
+  };
+
+  const handleSave = async () => {
+
+    if (!selectedFile) {
+      alert("Debe subir un archivo antes de guardar.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("file", selectedFile);
+
+    const token = localStorage.getItem("token");
+    const res = await fetch("http://localhost:5000/upload", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` }, // 🔹 No añadir `Content-Type`, Fetch lo maneja
+      body: formData,
+    });
+
+    if (res.ok) {
+      alert("Documento guardado correctamente");
+      setTitle("");
+      setSelectedFile(null);
+      setPdfPreviewUrl("");
+      fetchDocuments();
+    } else {
+      alert("Error al guardar el documento");
+    }
+};
+
 
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">
         Subir Documento PDF para Indexar
       </h2>
-      <PDFUpload onUpload={extraerPaginasPDF} isLoading={isLoading} />
-      {isLoading && (
-        <p className="text-blue-500 text-center">
-          Procesando PDF, por favor espera...
-        </p>
-      )}
-      <PDFPreview pdfPages={pdfPages} />
-
+      <PDFUpload onUpload={handleFileSelect} isLoading={isLoading} />
+      <PDFPreview pdfUrl={pdfPreviewUrl} /> {/* 🛠️ Pasamos la URL del PDF */}
+      
       <div className="mb-4">
         <label className="block font-medium text-gray-700">
           Título del Documento

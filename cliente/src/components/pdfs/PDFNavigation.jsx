@@ -2,7 +2,7 @@ import React from "react";
 
 const PDFNavigation = ({ currentPage, totalPages, onPrevious, onNext }) => {
   return (
-    <div className="flex justify-between mt-4">
+    <div className="flex justify-between w-full max-w-lg mt-4">
       <button
         className="px-4 py-2 bg-gray-300 rounded-lg disabled:opacity-50"
         disabled={currentPage === 0}

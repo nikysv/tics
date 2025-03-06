@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [isLoading, setIsLoading] = useState(true); // Nuevo estado de carga
 
   useEffect(() => {
     if (token) {
@@ -12,7 +13,7 @@ export function AuthProvider({ children }) {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // Asegurar que el token esté aquí
+          "Authorization": `Bearer ${token}`,
         },
       })
         .then((res) => {
@@ -22,8 +23,11 @@ export function AuthProvider({ children }) {
         .then((data) => setUser(data))
         .catch(() => {
           setUser(null);
-          localStorage.removeItem("token"); // Limpiar token si es inválido
-        });
+          localStorage.removeItem("token");
+        })
+        .finally(() => setIsLoading(false)); // Finaliza la carga
+    } else {
+      setIsLoading(false);
     }
   }, [token]);
 
@@ -52,7 +56,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

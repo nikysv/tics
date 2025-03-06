@@ -4,9 +4,9 @@ const PDFViewer = ({ pageSrc, pageNumber, totalPages }) => {
   return (
     <div className="flex flex-col items-center">
       <img
-        src={pageSrc} // Usamos la URL base64 de la página actual
+        src={pageSrc}
         alt={`Página ${pageNumber}`}
-        className="max-w-full h-96 border"
+        className="max-w-full h-[80vh] border shadow-lg"
       />
       <p className="mt-2 text-gray-600">
         Página {pageNumber} de {totalPages}

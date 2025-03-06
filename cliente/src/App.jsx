@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./components/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 
 import Header from "./components/Header";
 import Dashboard from "./views/Dashboard";
@@ -9,7 +9,7 @@ import VistaDocumento from "./views/VistaDocumento"; // Importamos la vista de d
 import MisLotes from "./components/lotes/MisLotes";
 import PerfilUsuario from "./components/user/UserView";
 import Login from "./components/login/Login";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./context/ProtectedRoute";
 
 function App() {
   return (

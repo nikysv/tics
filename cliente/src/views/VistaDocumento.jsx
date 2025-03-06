@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PDFViewer from "../components/pdfs/PDFViewer";
 import PDFNavigation from "../components/pdfs/PDFNavigation";
@@ -10,28 +10,40 @@ const VistaDocumento = () => {
   const [paginaActual, setPaginaActual] = useState(0);
 
   useEffect(() => {
-    const storedFiles = JSON.parse(localStorage.getItem("uploadedFiles")) || [];
-    const foundDoc = storedFiles.find(
-      (doc) => doc.title === decodeURIComponent(titulo)
-    );
+    const fetchDocumento = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`http://localhost:5000/documento/${encodeURIComponent(titulo)}`, {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-    if (foundDoc) {
-      setDocumento(foundDoc);
-    } else {
-      navigate("/indexar"); // Redirigir si el documento no existe
-    }
-  }, [titulo, navigate]);
+        if (!res.ok) {
+          throw new Error("Documento no encontrado");
+        }
 
-  if (!documento) return <p>No hay documento seleccionado.</p>;
+        const data = await res.json();
+        setDocumento(data);
+      } catch (error) {
+        console.error("Error al cargar el documento:", error);
+      }
+    };
+
+    fetchDocumento();
+  }, [titulo]);
+
+  if (!documento) return <p className="text-center text-red-500">Cargando documento...</p>;
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">{documento.title}</h2>
+    <div className="flex flex-col items-center p-6">
+      <h2 className="text-2xl font-bold mb-4">{documento.titulo}</h2>
+
       <PDFViewer
-        pageSrc={documento.files[paginaActual]}
+        pageSrc={`http://localhost:5000/${documento.files[paginaActual]}`} // ✅ Manteniendo la estructura
         pageNumber={paginaActual + 1}
         totalPages={documento.files.length}
       />
+
       {documento.files.length > 1 && (
         <PDFNavigation
           currentPage={paginaActual}
@@ -40,6 +52,7 @@ const VistaDocumento = () => {
           onNext={() => setPaginaActual(paginaActual + 1)}
         />
       )}
+
       <button
         className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
         onClick={() => navigate("/indexar")}

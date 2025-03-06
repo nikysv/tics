@@ -1,39 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useDocuments } from "../hooks/useDocuments";
 import { usePDFProcessor } from "../hooks/usePDFProcessor";
 import PDFUpload from "../components/pdfs/PDFUpload";
 import PDFPreview from "../components/pdfs/PDFPreview";
 import DocumentsTable from "../components/pdfs/DocumentsTable";
 
 const Indexar = () => {
+  const { documents, fetchDocuments } = useDocuments(); // 🔹 Usamos el nuevo hook
   const { isLoading } = usePDFProcessor();
   const [title, setTitle] = useState("");
-  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [pdfPreviewUrl, setPdfPreviewUrl] = useState(""); // 🛠️ Almacena la URL del PDF
-
-  useEffect(() => {
-    fetchDocuments();
-  }, []);
-
-  const fetchDocuments = async () => {
-    const token = localStorage.getItem("token");
-    const res = await fetch("http://localhost:5000/documentos", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await res.json();
-    setUploadedFiles(data);
-  };
+  const [pdfPreviewUrl, setPdfPreviewUrl] = useState("");
 
   const handleFileSelect = (file) => {
     setSelectedFile(file);
-    
-    // 🛠️ Generar una URL temporal para mostrar la vista previa
-    const previewUrl = URL.createObjectURL(file);
-    setPdfPreviewUrl(previewUrl);
+    setPdfPreviewUrl(URL.createObjectURL(file));
   };
 
   const handleSave = async () => {
-
     if (!selectedFile) {
       alert("Debe subir un archivo antes de guardar.");
       return;
@@ -44,9 +28,9 @@ const Indexar = () => {
     formData.append("file", selectedFile);
 
     const token = localStorage.getItem("token");
-    const res = await fetch("http://localhost:5000/upload", {
+    const res = await fetch("http://localhost:5000/documents/upload", {
       method: "POST",
-      headers: { Authorization: `Bearer ${token}` }, // 🔹 No añadir `Content-Type`, Fetch lo maneja
+      headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
 
@@ -55,25 +39,20 @@ const Indexar = () => {
       setTitle("");
       setSelectedFile(null);
       setPdfPreviewUrl("");
-      fetchDocuments();
+      fetchDocuments(); // 🔹 Actualizamos la lista de documentos
     } else {
       alert("Error al guardar el documento");
     }
-};
-
+  };
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">
-        Subir Documento PDF para Indexar
-      </h2>
+      <h2 className="text-2xl font-bold mb-4">Subir Documento PDF para Indexar</h2>
       <PDFUpload onUpload={handleFileSelect} isLoading={isLoading} />
-      <PDFPreview pdfUrl={pdfPreviewUrl} /> {/* 🛠️ Pasamos la URL del PDF */}
-      
+      <PDFPreview pdfUrl={pdfPreviewUrl} />
+
       <div className="mb-4">
-        <label className="block font-medium text-gray-700">
-          Título del Documento
-        </label>
+        <label className="block font-medium text-gray-700">Título del Documento</label>
         <input
           type="text"
           className="mt-2 w-full p-2 border rounded-lg"
@@ -92,7 +71,7 @@ const Indexar = () => {
         Guardar Documento
       </button>
 
-      <DocumentsTable documents={uploadedFiles} />
+      <DocumentsTable documents={documents} />
     </div>
   );
 };

@@ -11,10 +11,11 @@ export const usePDFProcessor = () => {
   const extraerPaginasPDF = async (file) => {
     setIsLoading(true);
     setPdfPages([]);
+
+    const fileUrl = URL.createObjectURL(file);
     
     try {
-      
-      const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
+      const pdf = await pdfjsLib.getDocument(fileUrl).promise;
       let paginas = [];
 
       for (let i = 1; i <= pdf.numPages; i++) {
@@ -34,6 +35,7 @@ export const usePDFProcessor = () => {
     } catch (error) {
       console.error("Error al procesar PDF:", error);
     } finally {
+      URL.revokeObjectURL(fileUrl); // 🔹 Liberar memoria
       setIsLoading(false);
     }
   };

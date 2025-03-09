@@ -27,7 +27,7 @@ const Indexar = () => {
     formData.append("title", title);
     formData.append("file", selectedFile);
 
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const res = await fetch("http://localhost:5000/documents/upload", {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
@@ -39,7 +39,7 @@ const Indexar = () => {
       setTitle("");
       setSelectedFile(null);
       setPdfPreviewUrl("");
-      fetchDocuments(); // 🔹 Actualizamos la lista de documentos
+      fetchDocuments();
     } else {
       alert("Error al guardar el documento");
     }

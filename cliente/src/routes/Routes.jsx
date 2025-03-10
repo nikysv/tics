@@ -3,14 +3,15 @@ import ProtectedRoute from "../context/ProtectedRoute";
 import Dashboard from "../views/Dashboard";
 import Indexar from "../views/Indexar";
 import VistaDocumento from "../views/VistaDocumento";
-import MisLotes from "../components/lotes/MisLotes";
+import MisLotes from "../views/Lotes";
+//import MisLotes from "../components/lotes/MisLotes";
 import PerfilUsuario from "../views/UserView";
 import Login from "../views/Login";
 
 const privateRoutes = [
   { path: "/", element: <Dashboard /> },
   { path: "/indexar", element: <Indexar /> },
-  { path: "/mis-lotes", element: <MisLotes /> },
+  { path: "/lotes", element: <MisLotes /> },
   { path: "/perfil", element: <PerfilUsuario /> },
   { path: "/indexar/documento/:titulo", element: <VistaDocumento /> },
 ];

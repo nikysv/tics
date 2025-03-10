@@ -7,7 +7,7 @@ const Header = () => {
 
   const links = [
     { path: "/indexar", label: "Indexar" },
-    { path: "/mis-lotes", label: "Mis Lotes" },
+    { path: "/lotes", label: "Mis Lotes" },
     { path: "/perfil", label: "Perfil" },
   ];
 

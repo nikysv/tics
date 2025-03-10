@@ -71,7 +71,7 @@ const Indexar = () => {
         Guardar Documento
       </button>
 
-      <DocumentsTable documents={documents} />
+      <DocumentsTable documents={documents} isIndexarView={true} />
     </div>
   );
 };

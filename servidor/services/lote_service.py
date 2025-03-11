@@ -31,6 +31,7 @@ def get_documents_from_lote(user_id):
     query = """
         SELECT 
             u.nombre, 
+            d.id,
             d.titulo, 
             d.documento
         FROM 

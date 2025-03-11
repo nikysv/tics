@@ -9,13 +9,19 @@ const Lotes = () => {
   const navigate = useNavigate();
 
   const handleIndexar = (documento) => {
-    navigate(`/indexar/${documento.id}`); // Redirige a la vista de indexación
+    console.log("Navegando a documento:", documento); // Debug
+    navigate(`/indexar/documento/${documento.id.toString()}`);
   };
-  
+
+  const handleVerDocumento = (documento) => {
+    navigate(`/ver/documento/${documento.id}`);
+  };
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Mis Lotes - Documentos para Indexar</h2>
+      <h2 className="text-2xl font-bold mb-4">
+        Mis Lotes - Documentos para Indexar
+      </h2>
       <button
         className="mb-4 py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600"
         onClick={() => setIsModalOpen(true)}
@@ -35,21 +41,31 @@ const Lotes = () => {
           {lotes.length > 0 ? (
             lotes.map((documento, index) => (
               <tr key={index} className="text-center">
-                <td className="border border-gray-300 p-2">{documento.nombre}</td>
-                <td className="border border-gray-300 p-2">{documento.titulo}</td>
                 <td className="border border-gray-300 p-2">
+                  {documento.nombre}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {documento.titulo}
+                </td>
+                <td className="border border-gray-300 p-2 space-x-2">
                   <button
                     className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600"
                     onClick={() => handleIndexar(documento)}
                   >
                     Indexar
                   </button>
+                  <button
+                    className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+                    onClick={() => handleVerDocumento(documento)}
+                  >
+                    Ver
+                  </button>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="2" className="text-center p-4">
+              <td colSpan="3" className="text-center p-4">
                 No hay documentos seleccionados.
               </td>
             </tr>

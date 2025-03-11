@@ -12,7 +12,7 @@ from routes.lote_routes import lote_routes
 app = Flask(__name__)
 app.config.from_object(Config)
 
-CORS(app)
+CORS(app)  # Habilitar CORS para todas las rutas
 jwt = JWTManager(app)
 
 # Registrar Blueprints (Rutas)

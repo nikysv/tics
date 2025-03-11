@@ -7,13 +7,15 @@ import MisLotes from "../views/Lotes";
 //import MisLotes from "../components/lotes/MisLotes";
 import PerfilUsuario from "../views/UserView";
 import Login from "../views/Login";
+import VerDocumento from "../views/VerDocumento";
 
 const privateRoutes = [
   { path: "/", element: <Dashboard /> },
   { path: "/indexar", element: <Indexar /> },
   { path: "/lotes", element: <MisLotes /> },
   { path: "/perfil", element: <PerfilUsuario /> },
-  { path: "/indexar/documento/:titulo", element: <VistaDocumento /> },
+  { path: "/indexar/documento/:docId", element: <VistaDocumento /> }, // Changed from :id to :docId
+  { path: "/ver/documento/:docId", element: <VerDocumento /> },
 ];
 
 const publicRoutes = [
@@ -24,7 +26,11 @@ const publicRoutes = [
 const AppRoutes = () => (
   <Routes>
     {privateRoutes.map(({ path, element }) => (
-      <Route key={path} path={path} element={<ProtectedRoute>{element}</ProtectedRoute>} />
+      <Route
+        key={path}
+        path={path}
+        element={<ProtectedRoute>{element}</ProtectedRoute>}
+      />
     ))}
     {publicRoutes.map(({ path, element }) => (
       <Route key={path} path={path} element={element} />
